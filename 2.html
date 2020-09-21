@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+	<title>My First OAuth2 App</title>
+</head>
+<body>
+	<div id="info">
+		Hoi!
+	</div>
+<a id="login" style="display: none;" href="https://discord.com/api/oauth2/authorize?client_id=755593819822489721&redirect_uri=https%3A%2F%2Fandrewt-discord-bots.darealytygrunn1.repl.co%2FLoggedin.html&response_type=code&scope=identify">Identify Yourself</a>
+	<script>
+		window.onload = () => {
+			const fragment = new URLSearchParams(window.location.hash.slice(1));
+
+			if (fragment.has("access_token")) {
+				const accessToken = fragment.get("access_token");
+				const tokenType = fragment.get("token_type");
+
+				fetch('https://discordapp.com/api/users/@me', {
+					headers: {
+						authorization: `${tokenType} ${accessToken}`
+					}
+				})
+					.then(res => res.json())
+					.then(response => {
+						const { username, discriminator } = response;
+						document.getElementById('info').innerText += ` ${username}#${discriminator}`;
+					})
+					.catch(console.error);
+
+			}
+			else {
+				document.getElementById('login').style.display = 'block';
+			}
+		}
+	</script>
+</body>
+</html>
